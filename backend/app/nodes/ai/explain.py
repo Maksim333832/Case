@@ -62,16 +62,19 @@ class AiExplainNode(BaseNode):
                 "findings": [],
             }
 
+        from app.api.settings import resolve_effective_llm_config
+
+        cfg_base_url, cfg_model, cfg_api_key, _ = resolve_effective_llm_config()
         api_key = await ctx.get_credential(params.credential_id)
         if not api_key:
-            api_key = ctx.settings.llm_api_key.strip()
+            api_key = cfg_api_key
             if api_key:
                 register_runtime_secret(api_key)
                 ctx.extra_secrets.add(api_key)
                 extra = tuple(ctx.extra_secrets)
 
-        base_url = params.base_url.strip() or ctx.settings.llm_base_url
-        model = params.model.strip() or ctx.settings.llm_model
+        base_url = params.base_url.strip() or cfg_base_url
+        model = params.model.strip() or cfg_model
 
         system_prompt, user_prompt = build_ai_prompts(findings, params.language, extra)
         client = OpenAICompatibleClient(

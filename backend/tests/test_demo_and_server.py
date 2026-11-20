@@ -18,7 +18,7 @@ def test_default_config_never_enables_stub_scanners():
         reload_settings()
 
 
-def test_demo_script_passes_with_explicit_dev_stubs(monkeypatch):
+def test_demo_script_passes_with_real_scanners(monkeypatch):
     for key in ("USE_STUB_SCANNERS", "DATABASE_URL", "UPLOADS_DIR", "ARTIFACTS_DIR", "RUNS_DIR"):
         monkeypatch.delenv(key, raising=False)
     monkeypatch.setenv("LLM_API_KEY", "")
@@ -26,7 +26,7 @@ def test_demo_script_passes_with_explicit_dev_stubs(monkeypatch):
         rc = run_demo(
             Path("/home/user/training/training-project"),
             Path("/home/user/training/ground-truth/training-findings.json"),
-            use_stubs=True,
+            use_stubs=False,
         )
         assert rc == 0
     finally:

@@ -110,7 +110,7 @@ def generate_mutated_variants(source_dir: Path, truth_path: Path, out_dir: Path)
                     ("internal internal class", "internal class"),
                 ],
                 "A-SAST-02",
-                "HostnameVerifier",
+                "HostnameVerifier {",
                 None,
             ),
             (

@@ -34,12 +34,12 @@ def _zip_training_repo() -> bytes:
     return buf.getvalue()
 
 
-def test_stubs_and_evaluator_15_of_15_and_0_controls(tmp_path: Path, monkeypatch):
+def test_real_scanners_and_evaluator_15_of_15_and_0_controls(tmp_path: Path, monkeypatch):
     monkeypatch.setenv("DATABASE_URL", f"sqlite:///{tmp_path / 'eval.db'}")
     monkeypatch.setenv("UPLOADS_DIR", str(tmp_path / "uploads"))
     monkeypatch.setenv("ARTIFACTS_DIR", str(tmp_path / "runs"))
     monkeypatch.setenv("RUNS_DIR", str(tmp_path / "tmp_runs"))
-    monkeypatch.setenv("USE_STUB_SCANNERS", "1")
+    monkeypatch.setenv("USE_STUB_SCANNERS", "0")
     reload_settings()
 
     app = create_app()
@@ -165,7 +165,7 @@ def test_telegram_notify_success_and_token_masking_on_error(tmp_path: Path, monk
     monkeypatch.setenv("UPLOADS_DIR", str(tmp_path / "uploads"))
     monkeypatch.setenv("ARTIFACTS_DIR", str(tmp_path / "runs"))
     monkeypatch.setenv("RUNS_DIR", str(tmp_path / "tmp_runs"))
-    monkeypatch.setenv("USE_STUB_SCANNERS", "1")
+    monkeypatch.setenv("USE_STUB_SCANNERS", "0")
     monkeypatch.setenv("SECRET_KEY_FILE", str(tmp_path / "secret.key"))
     reload_settings()
 

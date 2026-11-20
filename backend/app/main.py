@@ -10,6 +10,7 @@ from app.api.credentials import register_existing_credentials_for_masking
 from app.api.credentials import router as credentials_router
 from app.api.node_types import router as node_types_router
 from app.api.runs import router as runs_router
+from app.api.settings import router as settings_router
 from app.api.templates import router as templates_router
 from app.api.templates import seed_templates_from_disk
 from app.api.uploads import router as uploads_router
@@ -60,6 +61,7 @@ def create_app() -> FastAPI:
     app.include_router(runs_router)
     app.include_router(uploads_router)
     app.include_router(credentials_router)
+    app.include_router(settings_router)
     app.include_router(ci_router)
     app.include_router(ws_router)
 

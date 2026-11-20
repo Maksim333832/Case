@@ -231,11 +231,13 @@ def test_e2e_phase_b_upload_scan_merge_export_and_ws(tmp_path: Path, monkeypatch
     monkeypatch.setenv("UPLOADS_DIR", str(tmp_path / "uploads"))
     monkeypatch.setenv("ARTIFACTS_DIR", str(tmp_path / "runs"))
     monkeypatch.setenv("RUNS_DIR", str(tmp_path / "tmp_runs"))
-    monkeypatch.setenv("USE_STUB_SCANNERS", "1")
+    monkeypatch.setenv("USE_STUB_SCANNERS", "0")
     reload_settings()
 
-    # Use a temporary stub returning 2 distinct findings + 1 duplicate to test merge + export
-    from app.nodes.scanners import _stubs
+    # Override scanners cleanly to test duplicate elimination in findings.merge + export
+    from app.scanners_impl import sast as real_sast
+    from app.scanners_impl import sca as real_sca
+    from app.scanners_impl import secrets as real_secrets
 
     sample_secret = Finding(
         category="SECRET",
@@ -255,9 +257,9 @@ def test_e2e_phase_b_upload_scan_merge_export_and_ws(tmp_path: Path, monkeypatch
         advisoryId="CVE-2022-42889",
         severity="CRITICAL",
     )
-    monkeypatch.setattr(_stubs, "scan_secrets_stub", lambda root, params: [sample_secret, sample_secret])
-    monkeypatch.setattr(_stubs, "scan_sca_stub", lambda root, params: [sample_sca])
-    monkeypatch.setattr(_stubs, "scan_sast_stub", lambda root, params: [])
+    monkeypatch.setattr(real_secrets, "scan", lambda root, params: [sample_secret, sample_secret])
+    monkeypatch.setattr(real_sca, "scan", lambda root, params: [sample_sca])
+    monkeypatch.setattr(real_sast, "scan", lambda root, params: [])
 
     app = create_app()
     with TestClient(app) as client:

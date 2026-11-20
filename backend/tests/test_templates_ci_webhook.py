@@ -28,7 +28,7 @@ def test_webhook_and_smtp_discovered_with_zero_engine_edits(tmp_path: Path, monk
     monkeypatch.setenv("UPLOADS_DIR", str(tmp_path / "uploads"))
     monkeypatch.setenv("ARTIFACTS_DIR", str(tmp_path / "runs"))
     monkeypatch.setenv("RUNS_DIR", str(tmp_path / "tmp_runs"))
-    monkeypatch.setenv("USE_STUB_SCANNERS", "1")
+    monkeypatch.setenv("USE_STUB_SCANNERS", "0")
     reload_settings()
 
     received_hooks = []
@@ -89,7 +89,7 @@ def test_templates_seed_copy_and_publish(tmp_path: Path, monkeypatch):
     monkeypatch.setenv("UPLOADS_DIR", str(tmp_path / "uploads"))
     monkeypatch.setenv("ARTIFACTS_DIR", str(tmp_path / "runs"))
     monkeypatch.setenv("RUNS_DIR", str(tmp_path / "tmp_runs"))
-    monkeypatch.setenv("USE_STUB_SCANNERS", "1")
+    monkeypatch.setenv("USE_STUB_SCANNERS", "0")
     reload_settings()
 
     app = create_app()
@@ -129,7 +129,7 @@ def test_ci_endpoint_auth_gate_and_config_generation(tmp_path: Path, monkeypatch
     monkeypatch.setenv("UPLOADS_DIR", str(tmp_path / "uploads"))
     monkeypatch.setenv("ARTIFACTS_DIR", str(tmp_path / "runs"))
     monkeypatch.setenv("RUNS_DIR", str(tmp_path / "tmp_runs"))
-    monkeypatch.setenv("USE_STUB_SCANNERS", "1")
+    monkeypatch.setenv("USE_STUB_SCANNERS", "0")
     monkeypatch.setenv("CI_API_TOKEN", "ci-super-secret-token")
     reload_settings()
 

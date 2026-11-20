@@ -157,7 +157,7 @@ def test_ai_retry_and_fallback_and_ollama_config(tmp_path: Path, monkeypatch):
     monkeypatch.setenv("UPLOADS_DIR", str(tmp_path / "uploads"))
     monkeypatch.setenv("ARTIFACTS_DIR", str(tmp_path / "runs"))
     monkeypatch.setenv("RUNS_DIR", str(tmp_path / "tmp_runs"))
-    monkeypatch.setenv("USE_STUB_SCANNERS", "1")
+    monkeypatch.setenv("USE_STUB_SCANNERS", "0")
     # Simulate switching to local Ollama strictly via settings
     monkeypatch.setenv("LLM_BASE_URL", "http://localhost:11434/v1")
     monkeypatch.setenv("LLM_MODEL", "qwen2.5-coder:7b")
@@ -266,7 +266,7 @@ def test_full_e2e_with_logic_branching_ai_and_telegram(tmp_path: Path, monkeypat
     monkeypatch.setenv("UPLOADS_DIR", str(tmp_path / "uploads"))
     monkeypatch.setenv("ARTIFACTS_DIR", str(tmp_path / "runs"))
     monkeypatch.setenv("RUNS_DIR", str(tmp_path / "tmp_runs"))
-    monkeypatch.setenv("USE_STUB_SCANNERS", "1")
+    monkeypatch.setenv("USE_STUB_SCANNERS", "0")
     monkeypatch.setenv("LLM_API_KEY", "fake-key-for-test")
     reload_settings()
 

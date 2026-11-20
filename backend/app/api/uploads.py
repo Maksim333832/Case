@@ -12,6 +12,22 @@ from app.core.models import UploadOut
 router = APIRouter(prefix="/api", tags=["uploads"])
 
 
+@router.get("/uploads", response_model=list[UploadOut])
+def list_uploads() -> list[UploadOut]:
+    factory = get_session_factory()
+    with factory() as session:
+        rows = session.query(UploadORM).order_by(UploadORM.created_at.desc()).limit(100).all()
+        return [
+            UploadOut(
+                upload_id=r.id,
+                filename=r.filename,
+                size_bytes=r.size_bytes,
+                created_at=r.created_at,
+            )
+            for r in rows
+        ]
+
+
 @router.post("/uploads", response_model=UploadOut, status_code=201)
 async def upload_zip(file: UploadFile = File(...)) -> UploadOut:
     settings = get_settings()

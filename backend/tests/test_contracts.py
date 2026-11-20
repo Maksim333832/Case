@@ -126,9 +126,24 @@ def test_fernet_encryption_outside_repo(tmp_path: Path):
     assert mask_credential_value("1000000001:FAKE_TEST_BOT_TOKEN_WndZ") == "****WndZ"
 
 
-def test_stubs_disabled_by_default():
+def test_stubs_disabled_by_default(monkeypatch):
     cfg = Settings()
     assert cfg.use_stub_scanners is False
+    # By default real scanners from app.scanners_impl.* resolve cleanly
+    fn = resolve_scanner_callable("secrets", cfg)
+    assert fn.__module__ == "app.scanners_impl.secrets"
+
+    # When implementation module is missing/unconfigured and stubs are disabled, raise ScannerNotConfiguredError
+    import importlib
+
+    real_import = importlib.import_module
+
+    def fake_import(name: str, *args, **kwargs):
+        if name.startswith("app.scanners_impl."):
+            raise ModuleNotFoundError(name)
+        return real_import(name, *args, **kwargs)
+
+    monkeypatch.setattr(importlib, "import_module", fake_import)
     with pytest.raises(ScannerNotConfiguredError):
         resolve_scanner_callable("secrets", cfg)
 
