@@ -12,5 +12,6 @@ venv/
 node_modules/
 dist/
 build/
+*.tsbuildinfo
 data/uploads/
 data/runs/
