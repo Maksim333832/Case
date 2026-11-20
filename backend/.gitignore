@@ -1,0 +1,27 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.egg-info/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.venv/
+venv/
+build/
+dist/
+
+# Secrets & local env
+.env
+.env.*
+!.env.example
+*.key
+*.pem
+
+# Runtime data & artifacts
+data/*.db
+data/*.sqlite*
+data/uploads/
+data/runs/
+artifacts/
+/tmp/

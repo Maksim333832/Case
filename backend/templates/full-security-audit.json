@@ -1,0 +1,32 @@
+{
+  "id": "tpl_full_security_audit",
+  "name": "Полный аудит безопасности (ZIP + AI + Telegram)",
+  "description": "Распаковывает загруженный архив, запускает Secrets/SCA/SAST анализаторы, объединяет находки, генерирует AI-рекомендации, формирует report.json и report.md, при наличии HIGH/CRITICAL отправляет уведомление в Telegram.",
+  "graph": {
+    "nodes": [
+      {"id": "n1", "type": "trigger.manual", "params": {"note": "Запуск аудита"}, "position": {"x": 50, "y": 200}},
+      {"id": "n2", "type": "source.upload_zip", "params": {"upload_id": "", "subdir": ""}, "position": {"x": 260, "y": 200}},
+      {"id": "n3", "type": "scanner.secrets", "params": {}, "position": {"x": 500, "y": 60}},
+      {"id": "n4", "type": "scanner.sca", "params": {"lockfile_priority": true}, "position": {"x": 500, "y": 200}},
+      {"id": "n5", "type": "scanner.sast", "params": {"ruleset": "kotlin-spring-boot"}, "position": {"x": 500, "y": 340}},
+      {"id": "n6", "type": "findings.merge", "params": {"deduplicate": true}, "position": {"x": 740, "y": 200}},
+      {"id": "n7", "type": "ai.explain", "params": {"language": "ru"}, "position": {"x": 960, "y": 200}},
+      {"id": "n8", "type": "findings.export", "params": {"title": "Repair Desk Security Report", "include_ai_summary": true}, "position": {"x": 1180, "y": 200}},
+      {"id": "n9", "type": "logic.if_else", "params": {"left": "findings.high_or_critical", "op": ">", "right": 0}, "position": {"x": 1400, "y": 200}},
+      {"id": "n10", "type": "notify.telegram", "params": {"credential_id": "", "chat_id": "", "parse_mode": "HTML"}, "position": {"x": 1640, "y": 140}}
+    ],
+    "edges": [
+      {"id": "e1", "source": "n1", "sourceHandle": "out", "target": "n2", "targetHandle": "trigger"},
+      {"id": "e2", "source": "n2", "sourceHandle": "workspace", "target": "n3", "targetHandle": "workspace"},
+      {"id": "e3", "source": "n2", "sourceHandle": "workspace", "target": "n4", "targetHandle": "workspace"},
+      {"id": "e4", "source": "n2", "sourceHandle": "workspace", "target": "n5", "targetHandle": "workspace"},
+      {"id": "e5", "source": "n3", "sourceHandle": "findings", "target": "n6", "targetHandle": "in"},
+      {"id": "e6", "source": "n4", "sourceHandle": "findings", "target": "n6", "targetHandle": "in"},
+      {"id": "e7", "source": "n5", "sourceHandle": "findings", "target": "n6", "targetHandle": "in"},
+      {"id": "e8", "source": "n6", "sourceHandle": "findings", "target": "n7", "targetHandle": "in"},
+      {"id": "e9", "source": "n7", "sourceHandle": "report", "target": "n8", "targetHandle": "in"},
+      {"id": "e10", "source": "n8", "sourceHandle": "report", "target": "n9", "targetHandle": "in"},
+      {"id": "e11", "source": "n9", "sourceHandle": "true", "target": "n10", "targetHandle": "in"}
+    ]
+  }
+}

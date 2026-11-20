@@ -1,0 +1,30 @@
+{
+  "id": "tpl_ci_pr_gate",
+  "name": "CI/CD Security Gate (PR / Commit проверка)",
+  "description": "Сценарий для запуска из GitHub Actions или GitLab CI через API: проверяет репозиторий, валидирует AI-рекомендации и сравнивает критичность с порогом HIGH.",
+  "graph": {
+    "nodes": [
+      {"id": "n1", "type": "trigger.manual", "params": {"note": "CI/CD Trigger"}, "position": {"x": 50, "y": 200}},
+      {"id": "n2", "type": "source.git_clone", "params": {"repo_url": "https://github.com/TBagirov/training", "subdir": ""}, "position": {"x": 270, "y": 200}},
+      {"id": "n3", "type": "scanner.secrets", "params": {}, "position": {"x": 510, "y": 60}},
+      {"id": "n4", "type": "scanner.sca", "params": {"lockfile_priority": true}, "position": {"x": 510, "y": 200}},
+      {"id": "n5", "type": "scanner.sast", "params": {}, "position": {"x": 510, "y": 340}},
+      {"id": "n6", "type": "findings.merge", "params": {"deduplicate": true}, "position": {"x": 750, "y": 200}},
+      {"id": "n7", "type": "ai.explain", "params": {"language": "ru"}, "position": {"x": 970, "y": 200}},
+      {"id": "n8", "type": "findings.export", "params": {"title": "CI/CD Security Gate Report"}, "position": {"x": 1190, "y": 200}},
+      {"id": "n9", "type": "logic.compare", "params": {"left": "findings.max_severity", "op": ">=", "right": "HIGH"}, "position": {"x": 1410, "y": 200}}
+    ],
+    "edges": [
+      {"id": "e1", "source": "n1", "sourceHandle": "out", "target": "n2", "targetHandle": "trigger"},
+      {"id": "e2", "source": "n2", "sourceHandle": "workspace", "target": "n3", "targetHandle": "workspace"},
+      {"id": "e3", "source": "n2", "sourceHandle": "workspace", "target": "n4", "targetHandle": "workspace"},
+      {"id": "e4", "source": "n2", "sourceHandle": "workspace", "target": "n5", "targetHandle": "workspace"},
+      {"id": "e5", "source": "n3", "sourceHandle": "findings", "target": "n6", "targetHandle": "in"},
+      {"id": "e6", "source": "n4", "sourceHandle": "findings", "target": "n6", "targetHandle": "in"},
+      {"id": "e7", "source": "n5", "sourceHandle": "findings", "target": "n6", "targetHandle": "in"},
+      {"id": "e8", "source": "n6", "sourceHandle": "findings", "target": "n7", "targetHandle": "in"},
+      {"id": "e9", "source": "n7", "sourceHandle": "report", "target": "n8", "targetHandle": "in"},
+      {"id": "e10", "source": "n8", "sourceHandle": "report", "target": "n9", "targetHandle": "in"}
+    ]
+  }
+}
